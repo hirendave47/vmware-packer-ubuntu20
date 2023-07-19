@@ -1,0 +1,41 @@
+#cloud-config
+autoinstall:
+  version: 1
+  early-commands:
+    # workaround to stop ssh for packer as it thinks it timed out
+    - sudo systemctl stop ssh
+    - sudo echo 'Acquire::http::Proxy "http://192.168.239.27:3128";' > /etc/apt/apt.conf
+    - sudo apt-get update
+  locale: en_US
+  keyboard:
+    layout: en
+    variant: us
+  packages: [open-vm-tools, openssh-server]
+  network:
+    network:
+      version: 2
+      ethernets:
+        ens192:
+          dhcp4: false
+          addresses: [10.10.40.3/24]
+          gateway4: 10.10.40.1
+          nameservers:
+            addresses: [192.168.239.24, 192.168.239.36]
+            search: [atosurnstack.lab]
+  identity:
+    hostname: ubuntu
+    username: ubuntu
+    password: "$6$rounds=4096$.YzF1Xwm$tnGwS1hHBLRMIMV8yBF4jj3mnomooXgAVoPeCNslFykgfVsyxzcRYYSGtIrfg7XVR.fdOiqNnMj.H8Y6H50NA0"
+  ssh:
+    install-server: yes
+    allow-pw: yes
+    authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCb7fcDZfIG+SxuP5UsZaoHPdh9MNxtEL5xRI71hzMS5h4SsZiPGEP4shLcF9YxSncdOJpyOJ6OgumNSFWj2pCd/kqg9wQzk/E1o+FRMbWX5gX8xMzPig8mmKkW5szhnP+yYYYuGUqvTAKX4ua1mQwL6PipWKYJ1huJhgpGHrvSQ6kuywJ23hw4klcaiZKXVYtvTi8pqZHhE5Kx1237a/6GRwnbGLEp0UR2Q/KPf6yRgZIrCdD+AtOznSBsBhf5vqcfnnwEIC/DOnqcOTahBVtFhOKuPSv3bUikAD4Vw7SIRteMltUVkd/O341fx+diKOBY7a8M6pn81HEZEmGsr7rT ubuntu@ubuntu.local
+  storage:
+    layout:
+      name: direct
+  user-data:
+    disable_root: false
+  late-commands:
+    - echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
+    - curtin in-target --target=/target -- chmod 440 /etc/sudoers.d/ubuntu
