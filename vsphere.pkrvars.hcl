@@ -19,4 +19,4 @@ vcenter_network                 = "Kubernetes"
 vcenter_folder                  = "Templates"
 
 # ISO Objects
-iso_path                        = "ISO/Atos_Ubuntu_20.04.6_v1.0.iso"
+iso_path                        = "CONTAINERIZATIONS/Atos_Ubuntu_20.04.6_v1.0.iso"
