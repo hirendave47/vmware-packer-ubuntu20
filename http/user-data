@@ -4,7 +4,8 @@ autoinstall:
   early-commands:
     # workaround to stop ssh for packer as it thinks it timed out
     - sudo systemctl stop ssh
-  locale: en_US
+    - sudo echo 'Acquire::http::Proxy "http://192.168.239.27:3128";' > /etc/apt/apt.conf
+    locale: en_US
   keyboard:
     layout: en
     variant: us
